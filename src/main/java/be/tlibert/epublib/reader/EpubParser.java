@@ -103,51 +103,92 @@ public class EpubParser {
             if (childNode.getNodeName().equalsIgnoreCase("metadata") || childNode.getNodeName().equalsIgnoreCase("opf:metadata")) {
                 NodeList metadataChildNodes = childNode.getChildNodes();
 
-
                 for (int j=0; j < metadataChildNodes.getLength(); ++j) {
                     Node metadataNode = metadataChildNodes.item(j);
                     String contents = clean(metadataNode.getTextContent());
 
-                    if (metadataNode.getNodeName().equalsIgnoreCase("dc:language")) {
-                        book.getLanguages().add(contents);
-                    } else if (metadataNode.getNodeName().equalsIgnoreCase("dc:creator")) {
-                        book.getCreators().add(contents);
-                    } else if (metadataNode.getNodeName().equalsIgnoreCase("dc:description")) {
-                        book.getDescriptions().add(contents);
-                    } else if (metadataNode.getNodeName().equalsIgnoreCase("dc:contributor")) {
-                        book.getContributors().add(contents);
-                    } else if (metadataNode.getNodeName().equalsIgnoreCase("dc:source")) {
-                        book.setSource(contents);
-                    } else if (metadataNode.getNodeName().equalsIgnoreCase("dc:subject")) {
-                        book.getSubjects().add(contents);
-                    } else if (metadataNode.getNodeName().equalsIgnoreCase("meta")) {
-                        Node nameNode = metadataNode.getAttributes().getNamedItem("name");
-                        if (nameNode != null) {
-                            String key = nameNode.getTextContent();
-                            Node valueNode = metadataNode.getAttributes().getNamedItem("content");
-                            String value = valueNode.getTextContent();
-                            book.getMetadataList().add(new Metadata(key, value));
-                        }
-                    } else if (metadataNode.getNodeName().equalsIgnoreCase("dc:title")) {
-                        book.getTitles().add(contents);
-                    } else if (metadataNode.getNodeName().equalsIgnoreCase("dc:date")) {
-                        Node nameNode = metadataNode.getAttributes().getNamedItem("opf:event");
-                        String dateType;
-                        if (nameNode != null) {
-                            dateType = nameNode.getTextContent();
-                        } else {
-                            dateType = "publication";
-                        }
-                        book.getBookDates().add(new BookDate(dateType, contents));
-                    } else if (metadataNode.getNodeName().equalsIgnoreCase("dc:identifier")) {
-                        Node nameNode = metadataNode.getAttributes().getNamedItem("opf:scheme");
-                        book.getIdentifiers().add(new BookIdentifier(nameNode.getTextContent(), contents));
-                    }
+                    addTitle(book, metadataNode, contents);
+                    addCreator(book, metadataNode, contents);
+                    addDescription(book, metadataNode, contents);
+                    addContributor(book, metadataNode, contents);
+                    addSource(book, metadataNode, contents);
+                    addSubject(book, metadataNode, contents);
+                    addMeta(book, metadataNode);
+                    addDate(book, metadataNode, contents);
+                    addIdentifiers(book, metadataNode, contents);
                 }
             }
         }
 
         return book;
+    }
+
+    private void addIdentifiers(Book book, Node metadataNode, String contents) {
+        if (metadataNode.getNodeName().equalsIgnoreCase("dc:identifier")) {
+            Node nameNode = metadataNode.getAttributes().getNamedItem("opf:scheme");
+            book.getIdentifiers().add(new BookIdentifier(nameNode.getTextContent(), contents));
+        }
+    }
+
+    private void addDate(Book book, Node metadataNode, String contents) {
+        if (metadataNode.getNodeName().equalsIgnoreCase("dc:date")) {
+            Node nameNode = metadataNode.getAttributes().getNamedItem("opf:event");
+            String dateType;
+            if (nameNode != null) {
+                dateType = nameNode.getTextContent();
+            } else {
+                dateType = "publication";
+            }
+            book.getBookDates().add(new BookDate(dateType, contents));
+        }
+    }
+
+    private void addMeta(Book book, Node metadataNode) {
+        if (metadataNode.getNodeName().equalsIgnoreCase("meta")) {
+            Node nameNode = metadataNode.getAttributes().getNamedItem("name");
+            if (nameNode != null) {
+                String key = nameNode.getTextContent();
+                Node valueNode = metadataNode.getAttributes().getNamedItem("content");
+                String value = valueNode.getTextContent();
+                book.getMetadataList().add(new Metadata(key, value));
+            }
+        }
+    }
+
+    private void addSubject(Book book, Node metadataNode, String contents) {
+        if (metadataNode.getNodeName().equalsIgnoreCase("dc:subject")) {
+            book.getSubjects().add(contents);
+        }
+    }
+
+    private void addSource(Book book, Node metadataNode, String contents) {
+        if (metadataNode.getNodeName().equalsIgnoreCase("dc:source")) {
+            book.setSource(contents);
+        }
+    }
+
+    private void addContributor(Book book, Node metadataNode, String contents) {
+        if (metadataNode.getNodeName().equalsIgnoreCase("dc:contributor")) {
+            book.getContributors().add(contents);
+        }
+    }
+
+    private void addDescription(Book book, Node metadataNode, String contents) {
+        if (metadataNode.getNodeName().equalsIgnoreCase("dc:description")) {
+            book.getDescriptions().add(contents);
+        }
+    }
+
+    private void addCreator(Book book, Node metadataNode, String contents) {
+        if (metadataNode.getNodeName().equalsIgnoreCase("dc:creator")) {
+            book.getCreators().add(contents);
+        }
+    }
+
+    private void addTitle(Book book, Node metadataNode, String contents) {
+        if (metadataNode.getNodeName().equalsIgnoreCase("dc:language")) {
+            book.getLanguages().add(contents);
+        }
     }
 
     private String clean(String textContent) {
