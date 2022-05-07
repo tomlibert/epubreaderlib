@@ -6,7 +6,8 @@
 
     <groupId>be.tlibert</groupId>
     <artifactId>epubreaderlib</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.1-SNAPSHOT</version>
+    <description>Library for parsing the metadata of an epub</description>
 
     <dependencies>
         <dependency>
@@ -19,6 +20,12 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.36</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.36</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

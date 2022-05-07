@@ -16,6 +16,7 @@ import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
@@ -57,12 +58,10 @@ public class EpubParser {
         return dbf;
     }
 
-    public Book parse(String filename) {
+    public Book parse(String filename) throws FileNotFoundException, InvalidEpubfileException {
         logger.trace("Going to parse epub {} ...", filename);
 
-        if (Files.notExists(Path.of(filename))) {
-            return null;
-        }
+        validateFile(filename);
 
         AtomicReference<Book> book = new AtomicReference<>(new Book());
         AtomicLong uncompressedSize = new AtomicLong();
@@ -88,6 +87,17 @@ public class EpubParser {
         book.get().setFilesize(uncompressedSize.get());
         book.get().setFilename(filename);
         return book.get();
+    }
+
+    private void validateFile(String filename) throws InvalidEpubfileException, FileNotFoundException {
+
+        if (filename == null || filename.isBlank() || !filename.endsWith(".epub")) {
+            throw new InvalidEpubfileException(filename);
+        }
+
+        if (Files.notExists(Path.of(filename))) {
+            throw new FileNotFoundException(filename);
+        }
     }
 
     private Book retrieveFromContent(Document doc) {

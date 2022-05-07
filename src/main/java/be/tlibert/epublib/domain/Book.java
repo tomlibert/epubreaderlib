@@ -145,4 +145,24 @@ public class Book {
     public void setTitles(List<String> titles) {
         this.titles = titles;
     }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "languages=" + languages +
+                ", subjects=" + subjects +
+                ", descriptions=" + descriptions +
+                ", creators=" + creators +
+                ", contributors=" + contributors +
+                ", identifiers=" + identifiers +
+                ", metadataList=" + metadataList +
+                ", bookDates=" + bookDates +
+                ", titles=" + titles +
+                ", id=" + id +
+                ", filesize=" + filesize +
+                ", filename='" + filename + '\'' +
+                ", source='" + source + '\'' +
+                ", epubVersion='" + epubVersion + '\'' +
+                '}';
+    }
 }

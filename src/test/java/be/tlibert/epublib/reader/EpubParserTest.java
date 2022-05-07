@@ -1,9 +1,12 @@
 package be.tlibert.epublib.reader;
 
 import be.tlibert.epublib.domain.Book;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.FileNotFoundException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,17 +19,36 @@ class EpubParserTest {
     }
 
     @Test
-    void parse() {
+    void parseValidFile() {
         String fn = getTestFile("epub2_unit_test1.epub");
 
-        long start = System.currentTimeMillis();
-        Book book = EpubParser.getInstance().parse(fn);
-        long stop = System.currentTimeMillis();
-        logger.info("Parsing of book took {} ms", stop - start);
-        assertNotNull(book);
-        assertNotNull(book.getLanguages());
-        assertEquals("en", book.getLanguages().get(0));
-        assertTrue(book.getFilesize() > 0);
-        logger.info("filesize= {}", book.getFilesize());
+        try {
+            Book book = EpubParser.getInstance().parse(fn);
+            assertNotNull(book);
+            assertNotNull(book.getLanguages());
+            assertEquals("en", book.getLanguages().get(0));
+            assertTrue(book.getFilesize() > 0);
+            logger.info("book= {}", book);
+        } catch (FileNotFoundException | InvalidEpubfileException e) {
+            fail(e.getMessage());
+        }
     }
+
+    @Test
+    void testParseNotAnEpubFile() {
+        String fn = getTestFile("notAnEpub.txt");
+
+        Assertions.assertThrows(InvalidEpubfileException.class, () -> {
+            EpubParser.getInstance().parse(fn);
+        });
+    }
+
+    @Test
+    void testParseNotExistingFile() {
+
+        Assertions.assertThrows(FileNotFoundException.class, () -> {
+            EpubParser.getInstance().parse("notExistingFile.epub");
+        });
+    }
+
 }
