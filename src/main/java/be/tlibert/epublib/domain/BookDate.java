@@ -1,6 +1,10 @@
 package be.tlibert.epublib.domain;
 
-public class BookDate {
+import java.io.Serializable;
+
+public class BookDate implements Serializable {
+
+    static final long serialVersionUID = 1L;
 
     private String dateType;
     private String dateValue;
@@ -24,5 +28,13 @@ public class BookDate {
 
     public void setDateValue(String dateValue) {
         this.dateValue = dateValue;
+    }
+
+    @Override
+    public String toString() {
+        return "BookDate{" +
+                "dateType='" + dateType + '\'' +
+                ", dateValue='" + dateValue + '\'' +
+                '}';
     }
 }

@@ -1,6 +1,11 @@
 package be.tlibert.epublib.domain;
 
-public class Metadata {
+import java.io.Serializable;
+
+public class Metadata implements Serializable {
+
+    static final long serialVersionUID = 1L;
+
     private String key;
     private String value;
 
@@ -23,5 +28,13 @@ public class Metadata {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        return "Metadata{" +
+                "key='" + key + '\'' +
+                ", value='" + value + '\'' +
+                '}';
     }
 }

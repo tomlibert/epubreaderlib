@@ -1,4 +1,4 @@
-package be.tlibert.epublib.reader;
+package be.tlibert.epublib.exception;
 
 public class InvalidEpubfileException extends Exception {
     public InvalidEpubfileException(String filename) {

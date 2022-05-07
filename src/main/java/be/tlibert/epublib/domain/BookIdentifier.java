@@ -1,6 +1,10 @@
 package be.tlibert.epublib.domain;
 
-public class BookIdentifier {
+import java.io.Serializable;
+
+public class BookIdentifier implements Serializable {
+
+    static final long serialVersionUID = 1L;
 
     private String scheme;
     private String value;
@@ -24,5 +28,13 @@ public class BookIdentifier {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        return "BookIdentifier{" +
+                "scheme='" + scheme + '\'' +
+                ", value='" + value + '\'' +
+                '}';
     }
 }

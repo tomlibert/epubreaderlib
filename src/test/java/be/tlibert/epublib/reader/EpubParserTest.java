@@ -1,6 +1,7 @@
 package be.tlibert.epublib.reader;
 
 import be.tlibert.epublib.domain.Book;
+import be.tlibert.epublib.exception.InvalidEpubfileException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -27,7 +28,8 @@ class EpubParserTest {
             assertNotNull(book);
             assertNotNull(book.getLanguages());
             assertEquals("en", book.getLanguages().get(0));
-            assertTrue(book.getFilesize() > 0);
+            assertTrue(book.getCompressedFilesize() > 0);
+            assertTrue(book.getCompressedFilesize() > 0);
             logger.info("book= {}", book);
         } catch (FileNotFoundException | InvalidEpubfileException e) {
             fail(e.getMessage());

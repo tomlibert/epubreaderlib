@@ -4,6 +4,7 @@ import be.tlibert.epublib.domain.Book;
 import be.tlibert.epublib.domain.BookDate;
 import be.tlibert.epublib.domain.BookIdentifier;
 import be.tlibert.epublib.domain.Metadata;
+import be.tlibert.epublib.exception.InvalidEpubfileException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -67,7 +68,6 @@ public class EpubParser {
         AtomicLong uncompressedSize = new AtomicLong();
 
         try (ZipFile zipFile = new ZipFile(filename)) {
-
             zipFile.stream().forEach(zipEntry -> {
                 if (zipEntry.getName().toLowerCase().endsWith("content.opf")) {
                     logger.trace("Content.opf found; processing ...");
@@ -84,7 +84,12 @@ public class EpubParser {
         } catch (Exception e) {
             logger.error("Problem occured processing epub: {}", e.getMessage());
         }
-        book.get().setFilesize(uncompressedSize.get());
+        book.get().setUncompressedFilesize(uncompressedSize.get());
+        try {
+            book.get().setCompressedFilesize(Files.size(Path.of(filename)));
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
         book.get().setFilename(filename);
         return book.get();
     }

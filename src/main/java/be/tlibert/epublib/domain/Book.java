@@ -1,9 +1,13 @@
 package be.tlibert.epublib.domain;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Book {
+public class Book implements Serializable {
+
+    static final long serialVersionUID = 1L;
+
     private List<String> languages;
     private List<String> subjects;
     private List<String> descriptions;
@@ -16,7 +20,9 @@ public class Book {
     private List<String> titles;
     private Long id;
 
-    private long filesize;
+    private long uncompressedFilesize;
+
+    private long compressedFilesize;
 
     private String filename;
     private String source;
@@ -68,14 +74,6 @@ public class Book {
 
     public void setIdentifiers(List<BookIdentifier> identifiers) {
         this.identifiers = identifiers;
-    }
-
-    public long getFilesize() {
-        return filesize;
-    }
-
-    public void setFilesize(long filesize) {
-        this.filesize = filesize;
     }
 
     public String getFilename() {
@@ -146,6 +144,22 @@ public class Book {
         this.titles = titles;
     }
 
+    public long getUncompressedFilesize() {
+        return uncompressedFilesize;
+    }
+
+    public void setUncompressedFilesize(long uncompressedFilesize) {
+        this.uncompressedFilesize = uncompressedFilesize;
+    }
+
+    public long getCompressedFilesize() {
+        return compressedFilesize;
+    }
+
+    public void setCompressedFilesize(long compressedFilesize) {
+        this.compressedFilesize = compressedFilesize;
+    }
+
     @Override
     public String toString() {
         return "Book{" +
@@ -159,7 +173,8 @@ public class Book {
                 ", bookDates=" + bookDates +
                 ", titles=" + titles +
                 ", id=" + id +
-                ", filesize=" + filesize +
+                ", uncompressedFilesize=" + uncompressedFilesize +
+                ", compressedFilesize=" + compressedFilesize +
                 ", filename='" + filename + '\'' +
                 ", source='" + source + '\'' +
                 ", epubVersion='" + epubVersion + '\'' +
