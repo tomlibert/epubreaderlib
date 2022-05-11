@@ -7,10 +7,7 @@ import be.tlibert.epublib.domain.Metadata;
 import be.tlibert.epublib.exception.InvalidEpubfileException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
@@ -20,7 +17,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.invoke.MethodHandles;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicLong;
@@ -29,7 +25,7 @@ import java.util.zip.ZipFile;
 
 public class EpubParser {
 
-    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass().getSimpleName());
+    private static final Logger logger = LoggerFactory.getLogger(EpubParser.class);
 
     private DocumentBuilder db;
 
@@ -69,8 +65,8 @@ public class EpubParser {
 
         try (ZipFile zipFile = new ZipFile(filename)) {
             zipFile.stream().forEach(zipEntry -> {
-                if (zipEntry.getName().toLowerCase().endsWith("content.opf")) {
-                    logger.trace("Content.opf found; processing ...");
+                if (zipEntry.getName().toLowerCase().endsWith(".opf")) {
+                    logger.trace("Opf file found; processing ...");
                     Document doc;
                     try {
                         doc = createDocument(zipFile.getInputStream(zipEntry));
@@ -140,8 +136,13 @@ public class EpubParser {
 
     private void addIdentifiers(Book book, Node metadataNode, String contents) {
         if (metadataNode.getNodeName().equalsIgnoreCase("dc:identifier")) {
-            Node nameNode = metadataNode.getAttributes().getNamedItem("opf:scheme");
-            book.getIdentifiers().add(new BookIdentifier(nameNode.getTextContent(), contents));
+
+            NamedNodeMap attributes = metadataNode.getAttributes();
+            for (int i=0; i < attributes.getLength(); ++i) {
+                if (attributes.item(i).getNodeName().toLowerCase().contains("scheme")) {
+                    book.getIdentifiers().add(new BookIdentifier(attributes.item(i).getTextContent(), contents));
+                }
+            }
         }
     }
 

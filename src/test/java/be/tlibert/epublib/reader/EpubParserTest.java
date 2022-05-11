@@ -47,10 +47,23 @@ class EpubParserTest {
 
     @Test
     void testParseNotExistingFile() {
-
         Assertions.assertThrows(FileNotFoundException.class, () -> {
             EpubParser.getInstance().parse("notExistingFile.epub");
         });
     }
 
+/*
+    For debugging purposes
+    @Test
+    void testExternalFile() {
+        try {
+            Book book = EpubParser.getInstance().parse("D:\\epubweb\\shelf\\UNDEFINED\\UNDEFINED\\2401.epub");
+            assertNotNull(book);
+            assertFalse(book.getLanguages().isEmpty());
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (InvalidEpubfileException e) {
+            throw new RuntimeException(e);
+        }
+    }*/
 }
